@@ -1,14 +1,22 @@
 <!DOCTYPE html>
+{{- /*
+Expected Schema of Input:
+
+.
+.Title string
+.Body 
+
+*/ -}}
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  {{template "html/head.gohtml" .Head }}
+  <title>{{ .Title }}</title>
 </head>
 
 <body>
-  {{- template "html/body.gohtml" .Body -}}
+{{.Body}}
 </body>
 
 </html>
