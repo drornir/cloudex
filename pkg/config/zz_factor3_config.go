@@ -18,11 +18,6 @@ func (self *Config) Factor3Load(argv []string) error {
 	conf := zz_factor3_Config{}
 	conf.Filename = "config.yaml"
 
-	type jsonStruct struct {
-		Port     string `json:"port"`
-		LogLevel string `json:"log_level"`
-	}
-
 	loadConfigFile := func(filename string) error {
 		type jsonStruct struct {
 			Port     string `json:"port"`
