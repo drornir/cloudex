@@ -10,5 +10,5 @@ type Config struct {
 	//factor3:pflag log-level
 	LogLevel string
 	//factor3:pflag db
-	SQLiteURL string
+	LibsqlURL string
 }

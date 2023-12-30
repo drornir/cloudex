@@ -47,10 +47,21 @@ install-dev-deps: ## install dev deps
 	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 .PHONY: gen 
-gen: ## all code generation scripts
+gen: go-gen templ sqlc ## all code generation scripts
+
+.PHONY: go-gen
+go-gen:
 	go generate ./...
+
+.PHONY: templ
+templ:
 	templ generate
+
+.PHONY: sqlc
+sqlc:
+	rm pkg/db/*.sql.go
 	sqlc generate --file pkg/db/sqlc.yaml
+	
 
 .PHONY: build 
 build: # build into bin directory

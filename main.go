@@ -20,9 +20,9 @@ func main() {
 	if err := conf.Factor3Load(os.Args[1:]); err != nil {
 		log.Fatalf("error: loading config: %s", err)
 	}
-	db, err := db.New(conf.SQLiteURL)
+	db, err := db.OpenLibSQL(conf.LibsqlURL)
 	if err != nil {
-		log.Fatalf("error: connecting to db: %s", err)
+		log.Fatalf("error: connecting to db at %q: %s", conf.LibsqlURL, err)
 	}
 
 	appl := &app.App{

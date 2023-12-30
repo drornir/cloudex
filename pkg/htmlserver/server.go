@@ -1,10 +1,10 @@
 package htmlserver
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/drornir/cloudex/pkg/app"
 	"github.com/drornir/cloudex/pkg/component"
@@ -13,6 +13,7 @@ import (
 func New(appl *app.App) *echo.Echo {
 	e := echo.New()
 
+	e.Use(middleware.Logger())
 	e.Use(echo.WrapMiddleware(authMiddleware))
 
 	e.GET("/", homepage(appl))
@@ -30,7 +31,8 @@ func homepage(appl *app.App) func(c echo.Context) error {
 		comp := component.Document(in)
 		b, err := component.Render(c.Request().Context(), comp)
 		if err != nil {
-			return fmt.Errorf("rendering homepage: %w", err)
+			return echo.NewHTTPError(http.StatusInternalServerError, "rendering homepage").
+				SetInternal(err)
 		}
 
 		c.HTMLBlob(http.StatusOK, b)

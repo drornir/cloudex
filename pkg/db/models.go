@@ -2,13 +2,20 @@
 // versions:
 //   sqlc v1.24.0
 
-package queries
+package db
 
 import (
 	"database/sql"
 )
 
-type User struct {
+type Licenses struct {
+	ID          int64
+	User        int64
+	Product     string
+	Credentials string
+}
+
+type Users struct {
 	ID    int64
 	Email sql.NullString
 }

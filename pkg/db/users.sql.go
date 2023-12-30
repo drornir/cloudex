@@ -3,20 +3,20 @@
 //   sqlc v1.24.0
 // source: users.sql
 
-package queries
+package db
 
 import (
 	"context"
 )
 
 const getUser = `-- name: GetUser :one
-SELECT id, email FROM users
+SELECT id, email FROM "users"
 WHERE id = ? LIMIT 1
 `
 
-func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
+func (q *Queries) GetUser(ctx context.Context, id int64) (Users, error) {
 	row := q.db.QueryRowContext(ctx, getUser, id)
-	var i User
+	var i Users
 	err := row.Scan(&i.ID, &i.Email)
 	return i, err
 }
