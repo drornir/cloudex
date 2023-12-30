@@ -9,4 +9,6 @@ type Config struct {
 	Port string
 	//factor3:pflag log-level
 	LogLevel string
+	//factor3:pflag db
+	SQLiteURL string
 }

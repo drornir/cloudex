@@ -30,7 +30,7 @@ test: build ## go test ./...
 	go test ./...
 
 .PHONY: setup-dev
-setup: install-dev-deps goget ## setup dev env
+setup-dev: install-dev-deps goget ## setup dev env
 	
 .PHONY: goget
 goget: ## go get ./...
@@ -43,10 +43,14 @@ install-dev-deps: ## install dev deps
 	go install github.com/drornir/factor3@latest
 	go install golang.org/x/tools/cmd/stringer@latest
 	go install github.com/campoy/jsonenums@latest
+	go install github.com/a-h/templ/cmd/templ@latest
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 .PHONY: gen 
-gen: ## go generate
+gen: ## all code generation scripts
 	go generate ./...
+	templ generate
+	sqlc generate --file pkg/db/sqlc.yaml
 
 .PHONY: build 
 build: # build into bin directory

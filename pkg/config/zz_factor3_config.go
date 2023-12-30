@@ -20,8 +20,9 @@ func (self *Config) Factor3Load(argv []string) error {
 
 	loadConfigFile := func(filename string) error {
 		type jsonStruct struct {
-			Port     string `json:"port"`
-			LogLevel string `json:"log_level"`
+			Port      string `json:"port"`
+			LogLevel  string `json:"log_level"`
+			SQLiteURL string `json:"sq_lite_url"`
 		}
 		var jsoner json.Unmarshaler
 		if x, ok := interface{}(self).(json.Unmarshaler); ok {
@@ -70,6 +71,10 @@ func (self *Config) Factor3Load(argv []string) error {
 		if s != "" {
 			self.LogLevel = s
 		}
+		s = os.Getenv(prefix + "SQ_LITE_URL")
+		if s != "" {
+			self.SQLiteURL = s
+		}
 		return nil
 	}
 
@@ -80,6 +85,7 @@ func (self *Config) Factor3Load(argv []string) error {
 		fset := pflag.NewFlagSet("Config", pflag.ContinueOnError)
 		fset.StringVarP(&self.Port, "port", "", self.Port, "")
 		fset.StringVarP(&self.LogLevel, "log-level", "", self.LogLevel, "")
+		fset.StringVarP(&self.SQLiteURL, "db", "", self.SQLiteURL, "")
 
 		if err := fset.Parse(argv); err != nil {
 			return fmt.Errorf("parsing flags: %w", err)

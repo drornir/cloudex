@@ -7,7 +7,7 @@ type ctxKeyType string
 const userCtxKey = "user"
 
 type User struct {
-	ID string
+	ID int64
 }
 
 func UserFromContext(ctx context.Context) (User, error) {
