@@ -1,9 +1,14 @@
 package app
 
-import "github.com/drornir/cloudex/pkg/db"
+import (
+	"io/fs"
+
+	"github.com/drornir/cloudex/pkg/db"
+)
 
 type App struct {
-	DB *db.DB
+	DB       *db.DB
+	AssetsFS fs.FS
 
 	Vault *HashicorpVault
 }

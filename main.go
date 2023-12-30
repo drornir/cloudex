@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 
@@ -12,8 +13,8 @@ import (
 	"github.com/drornir/cloudex/pkg/htmlserver"
 )
 
-//go:embed css assets
-var fileSystem embed.FS
+//go:embed assets
+var rootFS embed.FS
 
 func main() {
 	var conf config.Config
@@ -25,8 +26,14 @@ func main() {
 		log.Fatalf("error: connecting to db at %q: %s", conf.LibsqlURL, err)
 	}
 
+	assetsFS, err := fs.Sub(rootFS, "assets")
+	if err != nil {
+		log.Fatalf("error creating sub FS for assets: %s", err)
+	}
+
 	appl := &app.App{
-		DB: db,
+		DB:       db,
+		AssetsFS: assetsFS,
 	}
 
 	s := htmlserver.New(appl)

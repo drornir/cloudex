@@ -18,6 +18,8 @@ func New(appl *app.App) *echo.Echo {
 
 	e.GET("/", homepage(appl))
 
+	e.StaticFS("/assets", appl.AssetsFS)
+
 	return e
 }
 
