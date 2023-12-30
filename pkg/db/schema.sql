@@ -1,6 +1,6 @@
 CREATE TABLE "users" (
 	"id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	"email"	text,
+	"email"	TEXT NOT NULL DEFAULT(""),
 	UNIQUE("email")
 );
 

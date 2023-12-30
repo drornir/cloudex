@@ -14,7 +14,7 @@ func New(appl *app.App) *echo.Echo {
 	e := echo.New()
 
 	e.Use(middleware.Logger())
-	e.Use(echo.WrapMiddleware(authMiddleware))
+	e.Use(authMiddleware(appl))
 
 	e.GET("/", homepage(appl))
 

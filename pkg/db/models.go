@@ -4,9 +4,7 @@
 
 package db
 
-import (
-	"database/sql"
-)
+import ()
 
 type Licenses struct {
 	ID          int64
@@ -17,5 +15,5 @@ type Licenses struct {
 
 type Users struct {
 	ID    int64
-	Email sql.NullString
+	Email string
 }
