@@ -4,8 +4,6 @@
 
 package db
 
-import ()
-
 type Licenses struct {
 	ID          int64
 	User        int64
