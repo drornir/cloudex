@@ -18,18 +18,20 @@ func (e Example) NewLicense(ctx context.Context) (License, error) {
 	rand.Read(b)
 	credentials := base64.RawURLEncoding.EncodeToString(b)
 	return ExampleLicense{
-		credentials: credentials,
+		Creds: credentials,
 	}, nil
 }
 
 type ExampleLicense struct {
-	credentials string
+	ID     int64
+	UserID int64
+	Creds  string
 }
 
 func (ExampleLicense) Product() Product {
-	return Example{}
+	return Products()[Example{}.Name()]
 }
 
 func (e ExampleLicense) Credentials() string {
-	return e.credentials
+	return e.Creds
 }

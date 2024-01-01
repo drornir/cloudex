@@ -12,7 +12,7 @@ import (
 const insertLicense = `-- name: InsertLicense :one
 INSERT INTO "licenses" (product, user, credentials)
 VALUES (?, ?, ?)
-RETURNING id
+RETURNING id, user, product, credentials
 `
 
 type InsertLicenseParams struct {
@@ -21,9 +21,14 @@ type InsertLicenseParams struct {
 	Credentials string
 }
 
-func (q *Queries) InsertLicense(ctx context.Context, arg InsertLicenseParams) (int64, error) {
+func (q *Queries) InsertLicense(ctx context.Context, arg InsertLicenseParams) (Licenses, error) {
 	row := q.db.QueryRowContext(ctx, insertLicense, arg.Product, arg.User, arg.Credentials)
-	var id int64
-	err := row.Scan(&id)
-	return id, err
+	var i Licenses
+	err := row.Scan(
+		&i.ID,
+		&i.User,
+		&i.Product,
+		&i.Credentials,
+	)
+	return i, err
 }
