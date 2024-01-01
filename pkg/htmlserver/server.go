@@ -28,6 +28,15 @@ func homepage(appl *app.App) func(c echo.Context) error {
 		in := component.DocumentInput{
 			Title:        "Home",
 			PageNotFound: false,
+			Content: component.MainContentInput{
+				Products: []component.Product{
+					{
+						Name:             "Example",
+						Description:      "An example product to try things with",
+						LinkToBuyLicense: "/buy-product?name=Example",
+					},
+				},
+			},
 		}
 
 		comp := component.Document(in)

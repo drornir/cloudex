@@ -25,6 +25,10 @@ help: ## Show help for each of the Makefile recipes.
 .PHONY: dev
 dev: gen fmt lint build run ## Main dev command. Run `make setup-dev` once before runnign this
 
+.PHONY: dev-run
+dev-run: ## Runs the server with templ hot reload
+	templ generate --watch --cmd="make build run"
+
 .PHONY: test
 test: build ## go test ./...
 	go test ./...
@@ -47,7 +51,7 @@ install-dev-deps: ## install dev deps
 	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 .PHONY: gen 
-gen: go-gen templ sqlc ## all code generation scripts
+gen: go-gen sqlc templ ## all code generation scripts
 
 .PHONY: go-gen
 go-gen:

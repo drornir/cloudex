@@ -1,0 +1,26 @@
+package component
+
+type MainContentInput struct {
+	Products []Product
+}
+
+templ MainContent(in MainContentInput) {
+	<div>
+		if len(in.Products) == 0 {
+			<p>
+				No products to show
+			</p>
+		} else {
+			for _, prod := range in.Products {
+				<div>
+					<a href={ templ.URL(prod.LinkToBuyLicense) }>
+						<p>
+							Name = { prod.Name }
+						</p>
+						<p>{ prod.Description }</p>
+					</a>
+				</div>
+			}
+		}
+	</div>
+}

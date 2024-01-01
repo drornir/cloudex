@@ -3,48 +3,48 @@ package component
 type DocumentInput struct {
 	Title        string
 	PageNotFound bool
+	Content      MainContentInput
 }
 
 templ Document(in DocumentInput) {
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <script src="https://unpkg.com/htmx.org@1.9.9"
-    integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" ></link>
-  @Style()
-
-  <title>Cloudex | {in.Title}</title>
-</head>
-
-<body class="container flex flex-col flex-nowrap min-h-screen min-w-full bg-slate-900 text-white">
-  <header class="flex flex-row p-4">
-    <a href="/" class="flex-none">
-      <img alt="logo" src="/assets/img/logo.png" class="w-20 h-20 rounded-full" />
-    </a>
-    <div class="grow"></div>
-    <div>right side</div>
-  </header>
-  <main class="grow flex p-4 border-red-500 border-2">
-    <aside>
-      <menu class="flex-none w-40 border-orange-500 border-2">
-        <ul><a href="/">Home</a></ul>
-        <ul><a href="/asdf">Not Home</a></ul>
-      </menu>
-    </aside>
-  </main>
-  <footer class="bg-slate-600 text-black p-4">
-    footer
-  </footer>
-</body>
-
-</html>
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<script
+				src="https://unpkg.com/htmx.org@1.9.9"
+				integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+				crossorigin="anonymous"
+			></script>
+			<script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+			@Style()
+			<title>Cloudex | { in.Title }</title>
+		</head>
+		<body class="container flex flex-col flex-nowrap min-h-screen min-w-full bg-slate-900 text-white">
+			<header class="flex flex-row p-4">
+				<a href="/" class="flex-none">
+					<img alt="logo" src="/assets/img/logo.png" class="w-20 h-20 rounded-full"/>
+				</a>
+				<div class="grow"></div>
+				<div>right side</div>
+			</header>
+			<div class="grow flex p-4 border-red-500 border-2">
+				<aside>
+					<menu class="flex-none w-40 border-orange-500 border-2">
+						<ul><a href="/">Home</a></ul>
+						<ul><a href="/asdf">Not Home</a></ul>
+					</menu>
+				</aside>
+				<main class="grow p-4 border-green-500 border-2">
+          @MainContent(in.Content)
+        </main>
+			</div>
+			<footer class="bg-slate-600 text-black p-4">
+				footer
+			</footer>
+		</body>
+	</html>
 }
