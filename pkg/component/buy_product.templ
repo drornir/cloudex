@@ -8,11 +8,16 @@ type BuyProductContentInput struct {
 }
 
 templ BuyProductContent(in BuyProductContentInput) {
+	// <form
+	// 	action={ templ.URL(in.Product.LinkToBuyLicense) }
+	// 	method="post"
+	// >
 	<form
-		action={ templ.URL(in.Product.LinkToBuyLicense) }
-		method="post"
+		hx-post={ string(templ.URL(in.Product.LinkToBuyLicense)) }
+		hx-target="this"
+		hx-swap="afterend"
 	>
-		<input type="hidden" name="name" value={in.Product.Name} />
+		<input type="hidden" name="name" value={ in.Product.Name }/>
 		<button>
 			Buy a License!
 		</button>
