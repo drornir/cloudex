@@ -1,6 +1,9 @@
 package app
 
-import "context"
+import (
+	"context"
+	"log"
+)
 
 type ctxKeyType string
 
@@ -20,5 +23,6 @@ func UserFromContext(ctx context.Context) (User, error) {
 }
 
 func ContextWithUser(ctx context.Context, u User) context.Context {
+	log.Printf("Adding user to context: %#v", u)
 	return context.WithValue(ctx, userCtxKey, u)
 }

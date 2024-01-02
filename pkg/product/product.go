@@ -4,6 +4,7 @@ import "context"
 
 type Product interface {
 	Name() string
+	Description() string
 	NewLicense(ctx context.Context) (License, error)
 }
 

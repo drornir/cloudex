@@ -9,6 +9,33 @@ import (
 	"context"
 )
 
+const getAllUsers = `-- name: GetAllUsers :many
+SELECT id, email FROM "users"
+`
+
+func (q *Queries) GetAllUsers(ctx context.Context) ([]Users, error) {
+	rows, err := q.db.QueryContext(ctx, getAllUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Users
+	for rows.Next() {
+		var i Users
+		if err := rows.Scan(&i.ID, &i.Email); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUser = `-- name: GetUser :one
 SELECT id, email FROM "users"
 WHERE id = ? LIMIT 1
@@ -16,6 +43,19 @@ WHERE id = ? LIMIT 1
 
 func (q *Queries) GetUser(ctx context.Context, id int64) (Users, error) {
 	row := q.db.QueryRowContext(ctx, getUser, id)
+	var i Users
+	err := row.Scan(&i.ID, &i.Email)
+	return i, err
+}
+
+const insertUser = `-- name: InsertUser :one
+INSERT INTO "users" (email)
+VALUES (?)
+RETURNING id, email
+`
+
+func (q *Queries) InsertUser(ctx context.Context, email string) (Users, error) {
+	row := q.db.QueryRowContext(ctx, insertUser, email)
 	var i Users
 	err := row.Scan(&i.ID, &i.Email)
 	return i, err

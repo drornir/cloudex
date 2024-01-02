@@ -63,7 +63,7 @@ templ:
 
 .PHONY: sqlc
 sqlc:
-	rm pkg/db/*.sql.go
+	rm pkg/db/*.sql.go || true
 	sqlc generate --file pkg/db/sqlc.yaml
 	
 

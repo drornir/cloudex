@@ -3,19 +3,20 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
-	_ "github.com/libsql/go-libsql"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type DB struct {
-	db *sql.DB
+	RawConn *sql.DB
 	*Queries
 }
 
 func OpenLibSQL(url string) (*DB, error) {
-	if strings.HasPrefix(url, "file://~") {
+	if strings.HasPrefix(url, "~") {
 		home, err := os.UserHomeDir()
 		if err != nil {
 			return nil, fmt.Errorf("expanding `~` to user home dir: %w", err)
@@ -24,7 +25,8 @@ func OpenLibSQL(url string) (*DB, error) {
 		url = strings.Replace(url, "~", home, 1)
 	}
 
-	conn, err := sql.Open("libsql", url)
+	log.Printf("connecting to db at %q", url)
+	conn, err := sql.Open("sqlite3", url)
 	if err != nil {
 		return nil, fmt.Errorf("opening db: %w", err)
 	}
@@ -34,7 +36,7 @@ func OpenLibSQL(url string) (*DB, error) {
 
 	qs := New(conn)
 	return &DB{
-		db:      conn,
+		RawConn: conn,
 		Queries: qs,
 	}, nil
 }

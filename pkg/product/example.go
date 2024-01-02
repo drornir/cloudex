@@ -13,6 +13,10 @@ func (e Example) Name() string {
 	return "Example"
 }
 
+func (e Example) Description() string {
+	return "An example product to try things with."
+}
+
 func (e Example) NewLicense(ctx context.Context) (License, error) {
 	b := make([]byte, 32)
 	rand.Read(b)

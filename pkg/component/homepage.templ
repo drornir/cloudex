@@ -1,0 +1,24 @@
+package component
+
+type HomepageContentInput struct {
+	Products []Product
+}
+
+templ HomepageContent(in HomepageContentInput) {
+		if len(in.Products) == 0 {
+			<p>
+				No products to show
+			</p>
+		} else {
+			for _, prod := range in.Products {
+				<div>
+					<a href={ templ.URL(prod.LinkToBuyLicense) }>
+						<p>
+							Name = { prod.Name }
+						</p>
+						<p>{ prod.Description }</p>
+					</a>
+				</div>
+			}
+		}
+}

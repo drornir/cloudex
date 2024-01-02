@@ -1,0 +1,34 @@
+package component
+
+import "github.com/drornir/cloudex/pkg/product"
+import "strconv"
+
+type BuyProductContentInput struct {
+	Product Product
+}
+
+templ BuyProductContent(in BuyProductContentInput) {
+	<form
+		action={ templ.URL(in.Product.LinkToBuyLicense) }
+		method="post"
+	>
+		<input type="hidden" name="name" value={in.Product.Name} />
+		<button>
+			Buy a License!
+		</button>
+	</form>
+}
+
+templ BuyProductResponse(l product.LicenseAndMeta) {
+	<div>
+		<div>
+			License for { l.License.Product().Name() }
+		</div>
+		<div>
+			Credendials: <code>{ l.License.Credentials() }</code>
+		</div>
+		<div>
+			DB ID: <code>{ strconv.FormatInt(l.Meta.ID, 10) }</code>
+		</div>
+	</div>
+}

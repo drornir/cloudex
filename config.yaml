@@ -1,3 +1,3 @@
 port: "8080"
 log_level: DEBUG
-libsql_url: "file://~/.libsql/cloudex.db"
+libsql_url: "~/.libsql/cloudex.db"
