@@ -6,5 +6,11 @@
     "htmlserver",
     "Libsql",
     "templ"
-  ]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "templ": "html"
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
 }

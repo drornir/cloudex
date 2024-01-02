@@ -51,7 +51,7 @@ install-dev-deps: ## install dev deps
 	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 .PHONY: gen 
-gen: go-gen sqlc templ ## all code generation scripts
+gen: go-gen sqlc tailwind templ ## all code generation scripts
 
 .PHONY: go-gen
 go-gen:
@@ -65,6 +65,10 @@ templ:
 sqlc:
 	rm pkg/db/*.sql.go || true
 	sqlc generate --file pkg/db/sqlc.yaml
+
+.PHONY: tailwind
+tailwind: 
+	tailwindcss -i css/main.css -o assets/main.css
 	
 
 .PHONY: build 

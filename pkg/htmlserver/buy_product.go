@@ -32,7 +32,7 @@ func buyProductPage(appl *app.App) func(c echo.Context) error {
 		}
 
 		in := component.DocumentInput{
-			Title:        "Home",
+			Title:        "Buy",
 			PageNotFound: false,
 			Content: component.MainContentInput{
 				BuyProductContentInput: &component.BuyProductContentInput{
