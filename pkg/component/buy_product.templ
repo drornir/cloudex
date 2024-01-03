@@ -2,38 +2,42 @@ package component
 
 import "github.com/drornir/cloudex/pkg/product"
 import "strconv"
+import "fmt"
 
 type BuyProductContentInput struct {
-	Product Product
+	Product  Product
 	Licenses []product.LicenseAndMeta
 }
 
 templ BuyProductContent(in BuyProductContentInput) {
-	<form
-		hx-post={ string(templ.URL(in.Product.LinkToBuyLicense)) }
-		hx-target="this"
-		hx-swap="afterend"
-	>
-		<input type="hidden" name="name" value={ in.Product.Name }/>
-		<button>
-			Buy a License for "{ in.Product.Name }"
-		</button>
-	</form>
-	for _, l := range in.Licenses {
-		@ShowLicenseAndMeta(l)
-	}
+	<div class="flex flex-col">
+		<form
+			class="flex-auto"
+			hx-post={ string(templ.URL(in.Product.LinkToBuyLicense)) }
+			hx-target={ fmt.Sprintf("#licenses-of-%s", in.Product.Name)}
+			hx-swap="afterbegin"
+		>
+			<input type="hidden" name="name" value={ in.Product.Name }/>
+			<button class="h-10 px-6 font-semibold rounded-md bg-black text-white">
+				Click to Buy a new { in.Product.Name } License
+			</button>
+		</form>
+		<div id={ fmt.Sprintf("licenses-of-%s", in.Product.Name)} >
+			for _, l := range in.Licenses {
+				@ShowLicenseAndMeta(l)
+			}
+		</div>
+	</div>
 }
 
 templ ShowLicenseAndMeta(l product.LicenseAndMeta) {
 	<div>
-		<div>
-			License for { l.License.Product().Name() }
-		</div>
+		<h1>
+			{ l.License.Product().Name() }
+			(<code>{ strconv.FormatInt(l.Meta.ID, 10) }</code>)
+		</h1>
 		<div>
 			Credendials: <code>{ l.License.Credentials() }</code>
-		</div>
-		<div>
-			DB ID: <code>{ strconv.FormatInt(l.Meta.ID, 10) }</code>
 		</div>
 	</div>
 }

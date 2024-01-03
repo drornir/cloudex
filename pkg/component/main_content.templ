@@ -6,7 +6,7 @@ type MainContentInput struct {
 }
 
 templ MainContent(in MainContentInput) {
-	<div>
+	<main class="grow p-4 border-green-500 border-2">
 		switch  {
 			case in.HomepageContentInput != nil:
 				@HomepageContent(*in.HomepageContentInput)
@@ -15,5 +15,5 @@ templ MainContent(in MainContentInput) {
 			default:
 				<div>No Content</div>
 		}
-	</div>
+	</main>
 }
