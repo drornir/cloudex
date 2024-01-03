@@ -8,6 +8,7 @@ import (
 
 	"github.com/drornir/cloudex/pkg/app"
 	"github.com/drornir/cloudex/pkg/component"
+	"github.com/drornir/cloudex/pkg/db"
 	"github.com/drornir/cloudex/pkg/product"
 )
 
@@ -21,6 +22,8 @@ func ProductToComponent(prod product.Product) component.Product {
 
 func buyProductPage(appl *app.App) func(c echo.Context) error {
 	return func(c echo.Context) error {
+		ctx := c.Request().Context()
+
 		prodName := c.QueryParam("name")
 		if prodName == "" {
 			return echo.NewHTTPError(http.StatusBadRequest, "query param 'name' for product name is required")
@@ -31,12 +34,32 @@ func buyProductPage(appl *app.App) func(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("product with name %q wasn't found", prodName))
 		}
 
+		u, err := app.UserFromContext(ctx)
+		if err != nil {
+			return err
+		}
+
+		dbLicenses, err := appl.DB.GetLicensesByProductAndUser(ctx,
+			db.GetLicensesByProductAndUserParams{
+				User:    u.ID,
+				Product: prod.Name(),
+			},
+		)
+
+		var licenses []product.LicenseAndMeta
+		for _, dbl := range dbLicenses {
+			licenses = append(licenses,
+				app.UnmarshalLicense(dbl),
+			)
+		}
+
 		in := component.DocumentInput{
 			Title:        "Buy",
 			PageNotFound: false,
 			Content: component.MainContentInput{
 				BuyProductContentInput: &component.BuyProductContentInput{
-					Product: ProductToComponent(prod),
+					Product:  ProductToComponent(prod),
+					Licenses: licenses,
 				},
 			},
 		}
@@ -65,7 +88,7 @@ func createNewLicense(appl *app.App) func(c echo.Context) error {
 				SetInternal(err)
 		}
 
-		comp := component.BuyProductResponse(l)
+		comp := component.ShowLicenseAndMeta(l)
 		return renderComp(c, comp)
 	}
 }

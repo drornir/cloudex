@@ -9,6 +9,45 @@ import (
 	"context"
 )
 
+const getLicensesByProductAndUser = `-- name: GetLicensesByProductAndUser :many
+SELECT id, user, product, credentials FROM "licenses"
+WHERE product = ? AND user = ?
+ORDER BY id DESC
+`
+
+type GetLicensesByProductAndUserParams struct {
+	Product string
+	User    int64
+}
+
+func (q *Queries) GetLicensesByProductAndUser(ctx context.Context, arg GetLicensesByProductAndUserParams) ([]Licenses, error) {
+	rows, err := q.db.QueryContext(ctx, getLicensesByProductAndUser, arg.Product, arg.User)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Licenses
+	for rows.Next() {
+		var i Licenses
+		if err := rows.Scan(
+			&i.ID,
+			&i.User,
+			&i.Product,
+			&i.Credentials,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const insertLicense = `-- name: InsertLicense :one
 INSERT INTO "licenses" (product, user, credentials)
 VALUES (?, ?, ?)

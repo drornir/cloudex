@@ -5,13 +5,10 @@ import "strconv"
 
 type BuyProductContentInput struct {
 	Product Product
+	Licenses []product.LicenseAndMeta
 }
 
 templ BuyProductContent(in BuyProductContentInput) {
-	// <form
-	// 	action={ templ.URL(in.Product.LinkToBuyLicense) }
-	// 	method="post"
-	// >
 	<form
 		hx-post={ string(templ.URL(in.Product.LinkToBuyLicense)) }
 		hx-target="this"
@@ -19,12 +16,15 @@ templ BuyProductContent(in BuyProductContentInput) {
 	>
 		<input type="hidden" name="name" value={ in.Product.Name }/>
 		<button>
-			Buy a License!
+			Buy a License for "{ in.Product.Name }"
 		</button>
 	</form>
+	for _, l := range in.Licenses {
+		@ShowLicenseAndMeta(l)
+	}
 }
 
-templ BuyProductResponse(l product.LicenseAndMeta) {
+templ ShowLicenseAndMeta(l product.LicenseAndMeta) {
 	<div>
 		<div>
 			License for { l.License.Product().Name() }
