@@ -20,7 +20,7 @@ templ Document(in DocumentInput) {
 			// <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
 			<title>Cloudex | { in.Title }</title>
 		</head>
-		<body class="container flex flex-col flex-nowrap min-h-screen min-w-full bg-slate-900 text-white">
+		<body class="container flex flex-col flex-nowrap min-h-screen min-w-full bg-slate-900 text-white font-sans">
 			<header class="flex flex-row p-4">
 				<a href="/" class="flex-none">
 					<img alt="logo" src="/assets/img/logo.png" class="w-20 h-20 rounded-full"/>
@@ -40,7 +40,7 @@ templ Document(in DocumentInput) {
 				//
 			</div>
 			<footer class="bg-slate-600 text-black p-4">
-				footer
+				<span class="font-serif">footer</span>
 			</footer>
 		</body>
 	</html>

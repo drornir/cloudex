@@ -22,19 +22,10 @@ default: help
 help: ## Show help for each of the Makefile recipes.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<command>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-.PHONY: dev
-dev: gen fmt lint build run ## Main dev command. Run `make setup-dev` once before runnign this
-
-.PHONY: dev-run
-dev-run: ## Runs the server with templ hot reload
-	templ generate --watch --cmd="make build run"
-
 .PHONY: test
 test: build ## go test ./...
 	go test ./...
 
-.PHONY: setup-dev
-setup-dev: install-dev-deps goget ## setup dev env
 	
 .PHONY: goget
 goget: ## go get ./...
@@ -50,11 +41,45 @@ install-dev-deps: ## install dev deps
 	go install github.com/a-h/templ/cmd/templ@latest
 	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
-.PHONY: gen 
-gen: go-gen sqlc tailwind templ ## all code generation scripts
+.PHONY: upgrade-go
+upgrade-go: ## upgrade to latest go and toolchain
+	go get go@latest
+	go get toolchain@patch
 
-.PHONY: go-gen
-go-gen:
+.PHONY: update-deps
+update-deps: ## go get -u ./...
+	go get -u ./...
+
+.PHONY: build 
+build: # build into bin directory
+	mkdir -p bin
+	go build -o bin/${BINARY} .
+
+.PHONY: run
+run: ## runs the build binary
+	bin/${BINARY}
+
+##@ Development
+
+.PHONY: dev
+dev: gen fmt lint build run ## Main dev command. Run `make setup-dev` once before runnign this
+
+.PHONY: dev-run
+dev-run: ## Runs the server with templ watch
+	templ generate --watch --cmd="$(MAKE) build run"
+
+.PHONY: setup-dev
+setup-dev: install-dev-deps goget ## setup dev env
+
+.PHONY: upgrade
+upgrade: upgrade-go update-deps install-dev-deps ## update all dependencies to latest
+	go mod tidy
+
+.PHONY: gen 
+gen: gen-go sqlc tailwind templ fmt ## all code generation scripts
+
+.PHONY: gen-go
+gen-go:
 	go generate ./...
 
 .PHONY: templ
@@ -70,12 +95,6 @@ sqlc:
 tailwind: 
 	tailwindcss -i css/main.css -o assets/main.css
 	
-
-.PHONY: build 
-build: # build into bin directory
-	mkdir -p bin
-	go build -o bin/${BINARY} .
-
 .PHONY: lint
 lint: ## go vet
 	go vet ./...
@@ -83,7 +102,3 @@ lint: ## go vet
 .PHONY: fmt
 fmt: ## goimports 
 	goimports -w .
-
-.PHONY: run
-run: ## runs the build binary
-	bin/${BINARY}
