@@ -22,34 +22,6 @@ default: help
 help: ## Show help for each of the Makefile recipes.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<command>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-.PHONY: test
-test: build ## go test ./...
-	go test ./...
-
-	
-.PHONY: goget
-goget: ## go get ./...
-	go get ./...
-	go mod tidy
-
-.PHONY: install-dev-deps
-install-dev-deps: ## install dev deps 
-	go install golang.org/x/tools/cmd/goimports@latest
-	go install github.com/drornir/factor3@latest
-	go install golang.org/x/tools/cmd/stringer@latest
-	go install github.com/campoy/jsonenums@latest
-	go install github.com/a-h/templ/cmd/templ@latest
-	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-
-.PHONY: upgrade-go
-upgrade-go: ## upgrade to latest go and toolchain
-	go get go@latest
-	go get toolchain@patch
-
-.PHONY: update-deps
-update-deps: ## go get -u ./...
-	go get -u ./...
-
 .PHONY: build 
 build: # build into bin directory
 	mkdir -p bin
@@ -61,6 +33,11 @@ run: ## runs the build binary
 
 ##@ Development
 
+.PHONY: test
+test: build ## go test ./...
+	go test ./...
+
+
 .PHONY: dev
 dev: gen fmt lint build run ## Main dev command. Run `make setup-dev` once before runnign this
 
@@ -69,11 +46,47 @@ dev-run: ## Runs the server with templ watch
 	templ generate --watch --cmd="$(MAKE) build run"
 
 .PHONY: setup-dev
-setup-dev: install-dev-deps goget ## setup dev env
+setup-dev: upgrade-go-tools goget ## setup dev env
 
-.PHONY: upgrade
-upgrade: upgrade-go update-deps install-dev-deps ## update all dependencies to latest
+
+.PHONY: goget
+goget: ## go get ./...
+	go get ./...
 	go mod tidy
+
+.PHONY: goget-u
+goget-u: ## go get -u ./...
+	go get -u ./...
+
+.PHONY: upgrade-app
+upgrade-app: upgrade-go goget-u ## update all dependencies to latest
+	go mod tidy
+
+.PHONY: upgrade-global
+upgrade-global: upgrade-go-tools upgrade-prettier brew-install ## upgrade global dev tooling
+
+.PHONY: upgrade-go
+upgrade-go: ## upgrade to latest go and toolchain
+	go get go@latest
+	go get toolchain@patch
+
+.PHONY: upgrade-prettier
+upgrade-prettier: ## upgrade prettier and plugin
+	npm update --include=dev prettier prettier-plugin-tailwindcss
+
+.PHONY: upgrade-go-tools
+upgrade-go-tools: ## install dev deps 
+	go install golang.org/x/tools/cmd/goimports@latest
+	go install github.com/drornir/factor3@latest
+	go install golang.org/x/tools/cmd/stringer@latest
+	go install github.com/campoy/jsonenums@latest
+	go install github.com/a-h/templ/cmd/templ@latest
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+
+.PHONY: brew-install
+brew-install: 
+	brew install tailwindcss
+
 
 .PHONY: gen 
 gen: gen-go sqlc tailwind templ fmt ## all code generation scripts
@@ -94,7 +107,8 @@ sqlc:
 .PHONY: tailwind
 tailwind: 
 	tailwindcss -i css/main.css -o assets/main.css
-	
+
+
 .PHONY: lint
 lint: ## go vet
 	go vet ./...
@@ -102,3 +116,4 @@ lint: ## go vet
 .PHONY: fmt
 fmt: ## goimports 
 	goimports -w .
+

@@ -13,4 +13,5 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
+   "prettier.documentSelectors": ["**/*.{yaml,json,js,templ,html}"],
 }
